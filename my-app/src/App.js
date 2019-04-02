@@ -8,6 +8,9 @@ class App extends Component {
     this.state = { alert: "alert message" };
   }
   doSomething = () => {
+    // When the button is clicked, you should change the alert message to
+    // "the button was clicked"
+    // do not use this.setState
     alert("hello");
   };
 
