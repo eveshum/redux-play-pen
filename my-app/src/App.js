@@ -1,12 +1,11 @@
 import React, { Component } from "react";
+import { createStore, bindActionCreators } from 'redux';
+import { Provider, connect } from 'react-redux';
 import "./App.css";
+import rootReducer from './reducer.js';
+import { logMessage, resetLogs } from './actions.js';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { message: "message", timesLogged: 0 };
-  }
   log = () => {
     // do not use this.setState
     // Part 1. When the button is clicked, you should change the message to
@@ -14,11 +13,11 @@ class App extends Component {
     // Part 2. Every time the button is clicked increment the number of times
     // logged value.  Use a different reducer than part 2
     const message = document.getElementById('message-input').value
-    alert(message);
+    this.props.logMessage(message);
   };
   reset = () => {
     // Part 3. Implement a new action that resets the message and counter
-    alert("reset");
+    this.props.resetLogs();
   };
 
   render() {
@@ -32,12 +31,41 @@ class App extends Component {
           Reset
         </button>
         <div>
-          <p>Message: {this.state.message}</p>
-          <p>Number of times logged: {this.state.timesLogged}</p>
+          <p>Message: {this.props.message}</p>
+          <p>Number of times logged: {this.props.timesLogged}</p>
         </div>
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  message: state.message.message,
+  timesLogged: state.logMetrics.timesLogged,
+});
+
+const mapDispatchToProps = dispatch => ({
+  logMessage: bindActionCreators(logMessage, dispatch),
+  resetLogs: bindActionCreators(resetLogs, dispatch),
+});
+
+const ConnectedApp = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);
+
+const AppContainer = () => {
+  const store = createStore(
+    rootReducer,
+    {},
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  );
+
+  return (
+    <Provider store={store}>
+      <ConnectedApp />
+    </Provider>
+  )
+}
+
+export default AppContainer;
