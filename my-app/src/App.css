@@ -1,4 +1,9 @@
+button {
+  margin-left: 10px;
+}
+
 .App {
+  padding-top: 20px;
   text-align: center;
 }
 
